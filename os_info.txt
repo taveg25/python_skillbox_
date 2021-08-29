@@ -1,0 +1,5 @@
+OS info is 
+uname_result(system='Linux', node='student-VirtualBox', release='4.15.0-154-generic', version='#161-Ubuntu SMP Fri Jul 30 13:04:17 UTC 2021', machine='x86_64', processor='x86_64')
+
+Python version is 3.7.11 (default, Jul  3 2021, 18:01:19) 
+[GCC 7.5.0]('64bit', '')

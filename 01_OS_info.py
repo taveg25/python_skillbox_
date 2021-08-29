@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+# TODO сделал то что нужно было, сейчас проверка
 import platform
 import sys
 
