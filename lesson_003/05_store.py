@@ -1,3 +1,4 @@
+#!/bin/usr/env python3
 # -*- coding: utf-8 -*-
 
 # Есть словарь кодов товаров
@@ -47,7 +48,24 @@ store = {
 #     вывод на консоль количества и стоимости товара на складе
 
 # TODO здесь ваш код
+# Сколько ламп, столов, диванов и стульев
+print(goods['Лампа'])
+print(store[goods['Лампа']])
+print()
 
+for i in goods.keys():
+    # print(i) - все эти принты помогли мне осозновать что получаем на каком этапе
+    quan = 0
+    all_cost = 0
+    for j in store[goods[i]]:
+        # print(j)
+        # print(j['quantity'])
+        quan += j['quantity']
+        cost = j['quantity'] * j['price']
+        all_cost += cost
+    # print(quan)
+    # print(all_cost)
+    print(i, '-', quan, 'шт, стоимость', all_cost, 'руб')
 
 
 
