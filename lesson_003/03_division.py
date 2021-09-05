@@ -1,3 +1,4 @@
+#!/bin/usr/env python3
 # -*- coding: utf-8 -*-
 
 # (цикл while)
@@ -10,4 +11,9 @@
 
 a, b = 179, 37
 
-# TODO здесь ваш код
+c=a
+result = 0
+while c-b >= 0:
+    result += 1
+    c -=b
+print('Целочисленное деление', a, 'на', b, 'дает', result)
