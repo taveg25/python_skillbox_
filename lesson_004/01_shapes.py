@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import simple_draw as sd
@@ -26,8 +27,49 @@ import simple_draw as sd
 # sd.get_vector()
 # sd.line()
 # Результат решения см lesson_004/results/exercise_01_shapes.jpg
-
 # TODO здесь ваш код
+def draw(point, angle, length, alpha):
+    v = sd.get_vector(start_point=point, angle=alpha+angle, length=length, width=3)
+    v.draw()
+    return v.end_point
+
+
+def triangle(point, angle, length):
+    for alpha in range(0, 241, 120):
+        point = draw(point, angle, length, alpha)
+
+
+    # v1 = sd.get_vector(start_point=point, angle=angle, length=length, width=3)
+    # v1.draw()
+    #
+    # v2 = sd.get_vector(start_point=v1.end_point, angle=angle + 120, length=length, width=3)
+    # v2.draw()
+    #
+    # v3 = sd.get_vector(start_point=v2.end_point, angle=angle + 240, length=length, width=3)
+    # v3.draw()
+
+def square(point, angle, length):
+    for alpha in range(0, 271, 90):
+        point = draw(point, angle, length, alpha)
+    # v1 = sd.get_vector(start_point=point, angle=angle, length=length, width=3)
+    # v1.draw()
+    #
+    # v2 = sd.get_vector(start_point=v1.end_point, angle=angle + 90, length=length, width=3)
+    # v2.draw()
+    #
+    # v3 = sd.get_vector(start_point=v2.end_point, angle=angle + 180, length=length, width=3)
+    # v3.draw()
+    #
+    # v4 = sd.get_vector(start_point=v3.end_point, angle=angle + 270, length=length, width=3)
+    # v4.draw()
+
+def hexagon(point, angle, length):
+    for alpha in range(0, 301, 60):
+        point = draw(point, angle, length, alpha)
+sd.resolution = (1200, 600)
+start_point = sd.get_point(300, 100)
+triangle(start_point, 30, 200)
+# new_function(start_point, 0, 200)
 
 # Часть 1-бис.
 # Попробуйте прикинуть обьем работы, если нужно будет внести изменения в этот код.
