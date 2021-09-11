@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import simple_draw as sd
 
@@ -39,16 +40,16 @@ def hexagon(point, angle, length, color):
 dict_colors_user = {'1':'red', '2':'orange',
                     '3':'yellow', '4':'green',
                     '5':'blue', '6':'purple'}
-dict_colors_program = {'1':sd.COLOR_RED, '2':sd.COLOR_ORANGE,
-                       '3':sd.COLOR_YELLOW, '4':sd.COLOR_GREEN,
-                       '5':sd.COLOR_BLUE, '6':sd.COLOR_PURPLE}
+dict_colors_program = {'red':sd.COLOR_RED, 'orange':sd.COLOR_ORANGE,
+                       'yellow':sd.COLOR_YELLOW, 'green':sd.COLOR_GREEN,
+                       'blue':sd.COLOR_BLUE, 'purple':sd.COLOR_PURPLE}
 print('возможные цвета:')
 for key, value in dict_colors_user.items():
     print(key, ':', value)
 s = input('выберете цвет').strip()
-if s in dict_colors_program.keys():
+if s in dict_colors_user.keys():
     sd.resolution = (1200, 600)
-    color = dict_colors_program[s]
+    color = dict_colors_program[dict_colors_user[s]]
     start_point_triangle = sd.get_point(300, 100)
     start_point_square = sd.get_point(500, 200)
     triangle(start_point_triangle, 30, 200, color=color)

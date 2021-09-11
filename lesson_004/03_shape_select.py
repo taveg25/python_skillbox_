@@ -1,4 +1,4 @@
-#!usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import simple_draw as sd
@@ -34,17 +34,17 @@ def hexagon(point, angle, length,):
 dict_figures_user = {'1': 'triangle', '2': 'square',
                     '3': 'hexagon',}
 
-dict_figures_program = {'1':triangle,
-                       '2': square,
-                       '3': hexagon, }
+dict_figures_program = {'triangle':triangle,
+                       'square': square,
+                       'hexagon': hexagon, }
 print('возможные фигуры:')
 for key, value in dict_figures_user.items():
     print(key, ':', value)
 s = input('выберете фигуры').strip()
-if s in dict_figures_program.keys():
+if s in dict_figures_user.keys():
     sd.resolution = (1200, 600)
     start_point = sd.get_point(500, 200)
-    dict_figures_program[s](start_point, 0, 200)
+    dict_figures_program[dict_figures_user[s]](start_point, 0, 200)
     sd.pause()
 else:
     print('Некорректный ввод')

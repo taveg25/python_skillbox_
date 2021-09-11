@@ -27,7 +27,7 @@ import simple_draw as sd
 # sd.get_vector()
 # sd.line()
 # Результат решения см lesson_004/results/exercise_01_shapes.jpg
-# TODO здесь ваш код
+
 def draw(point, angle, length, alpha):
     v = sd.get_vector(start_point=point, angle=alpha+angle, length=length, width=3)
     v.draw()
