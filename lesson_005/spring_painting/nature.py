@@ -13,9 +13,8 @@ radius = 500
 def rainbow(x, y, rad):
     rainbow_colors = (sd.COLOR_RED, sd.COLOR_ORANGE, sd.COLOR_YELLOW, sd.COLOR_GREEN,
                       sd.COLOR_CYAN, sd.COLOR_BLUE, sd.COLOR_PURPLE)
-    for i in range(7):
+    for color in rainbow_colors:
         centr_position = sd.get_point(x, y)
-        color = rainbow_colors[i]
         sd.circle(centr_position, rad, color, width=9)
         rad += 9
 

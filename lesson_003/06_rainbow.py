@@ -14,10 +14,9 @@ sd.resolution = (1200, 600)
 x_1, y_1 = 50, 20
 x_2, y_2 = 200, 450
 step = 10
-for i in range(7):
+for color in rainbow_colors:
     start_point = sd.get_point(x_1, y_1)
     end_point = sd.get_point(x_2, y_2)
-    color = rainbow_colors[i]
     sd.line(start_point, end_point, color, width=9)
     x_1 += step
     y_1 += step
@@ -31,9 +30,8 @@ for i in range(7):
 x_centr = 600
 y_centr = -300
 radius = 500
-for i in range(7):
+for color in rainbow_colors:
     centr_position = sd.get_point(x_centr, y_centr)
-    color = rainbow_colors[i]
     sd.circle(centr_position, radius, color, width=9)
     # x_centr += step
     y_centr += step
