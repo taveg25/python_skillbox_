@@ -43,4 +43,19 @@
 # Это пример применения SOLID принципа (см https://goo.gl/GFMoaI) в архитектуре программ.
 # Точнее, в этом случае важен принцип единственной ответственности - https://goo.gl/rYb3hT
 
-# TODO здесь ваш код...
+
+import mastermind_engine
+
+mastermind_engine.some_number()
+
+while True:
+    user_number = str(input('Введите четырехзначное число').strip())
+    if len(user_number) == 4 and user_number.isdigit():
+        result = mastermind_engine.check_number(user_number)
+        mastermind_engine.shaw_number(result)
+    else:
+        print('input uncorrect number')
+    if mastermind_engine.is_gameover(result):
+        print('You are vin for', mastermind_engine._course_of_game, 'course of game')
+        break
+
