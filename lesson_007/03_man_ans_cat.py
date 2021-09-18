@@ -1,6 +1,166 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 from random import randint
+from termcolor import cprint
+
+class Man:
+
+    def __init__(self, name):
+        self.name = name
+        self.fullness = 50
+        self.house = None
+
+    def __str__(self):
+        return 'Я - {}, сытость {}'.format(
+            self.name, self.fullness)
+
+    def eat(self):
+        if self.house.food_for_man >= 10:
+            cprint('{} поел'.format(self.name), color='yellow')
+            self.fullness += 10
+            self.house.food_for_man -= 10
+        else:
+            cprint('{} нет еды! Иду в магазин'.format(self.name), color='red')
+            self.shopping_for_man()
+
+    def work(self):
+        cprint('{} сходил на работу'.format(self.name), color='blue')
+        self.house.money += 150
+        self.fullness -= 10
+
+    def watch_MTV(self):
+        cprint('{} смотрел MTV целый день'.format(self.name), color='green')
+        self.fullness -= 10
+
+    def shopping_for_man(self):
+        if self.house.money >= 50:
+            cprint('{} сходил в магазин за человеческой едой'.format(self.name), color='magenta')
+            self.house.money -= 50
+            self.house.food_for_man += 50
+        else:
+            cprint('{} деньги кончились! Пошел на работу'.format(self.name), color='red')
+            self.work()
+
+    def shopping_for_cat(self):
+        if self.house.money >= 50:
+            cprint('{} сходил в магазин за кошачей едой'.format(self.name), color='magenta')
+            self.house.money -= 50
+            self.house.food_for_cat += 50
+        else:
+            cprint('{} деньги кончились! Пошел на работу!'.format(self.name), color='red')
+            self.work()
+
+    def go_to_the_house(self, house):
+        self.house = house
+        self.fullness -= 10
+        cprint('{} Вьехал в дом'.format(self.name), color='cyan')
+
+    def take_cat(self, cat):
+        cat.house = self.house
+        cprint('{} Вьехал в дом'.format(cat.name), color='cyan')
+
+    def clean(self):
+        self.house.mud -= 100
+        self.fullness -= 20
+
+    def act(self):
+        if self.fullness <= 0:
+            cprint('{} умер...'.format(self.name), color='red')
+            return
+        dice = randint(1, 6)
+        if self.fullness <= 20:
+            self.eat()
+        elif self.house.food_for_man < 10:
+            self.shopping_for_man()
+        elif self.house.food_for_cat < 30:
+            self.shopping_for_cat()
+        elif self.house.mud >= 100:
+            self.clean()
+        elif self.house.money < 50:
+            self.work()
+        elif dice == 1:
+            self.work()
+        elif dice == 2:
+            self.eat()
+        else:
+            self.watch_MTV()
+
+
+class House:
+
+    def __init__(self):
+        self.food_for_man = 50
+        self.food_for_cat = 30
+        self.mud = 0
+        self.money = 0
+
+    def __str__(self):
+        return 'В доме человеческой еды осталось {}, кошачей еды осталось {}, уровень грязи составляет ' \
+               '{} денег осталось {}'.format(
+            self.food_for_man, self.food_for_cat, self.mud, self.money)
+
+class Cat(object):
+
+    def __init__(self, name):
+        self.name = name
+        self.fullness = 50
+        self.house = None
+
+    def __str__(self):
+        return 'Я - {}, сытость {}'.format(
+            self.name, self.fullness)
+
+    def eat(self):
+        if self.house.food_for_cat >= 10:
+            cprint('{} поел'.format(self.name), color='yellow')
+            self.fullness += 20
+            self.house.food_for_cat -= 10
+        else:
+            cprint('{} нет кошачей еды'.format(self.name), color='red')
+            self.sleep()
+
+    def sleep(self):
+        cprint('{} поспал'.format(self.name), color='blue')
+        self.fullness -= 10
+
+    def breake_wall(self):
+        cprint('{} подрал обои'.format(self.name), color='blue')
+        self.fullness -= 10
+        self.house.mud += 5
+
+    def act(self):
+        if self.fullness <= 0 or self.house.mud > 120:
+            cprint('{} умер...'.format(self.name), color='red')
+            return
+        dice = randint(1, 6)
+        if self.fullness < 20:
+            self.eat()
+        elif dice == 1 or 2:
+            self.breake_wall()
+        elif dice == 3:
+            self.eat()
+        else:
+            self.sleep()
+
+leha = Man(name='Лёха')
+barsik = Cat(name='Барсик')
+matroskin = Cat(name='Матроскин')
+my_sweet_home = House()
+leha.go_to_the_house(house=my_sweet_home)
+leha.take_cat(barsik)
+leha.take_cat(matroskin)
+for day in range(1, 1366):
+    print('================ день {} =================='.format(day))
+    leha.act()
+    barsik.act()
+    matroskin.act()
+    print('--- в конце дня ---')
+    print(leha)
+    print(barsik)
+    print(matroskin)
+    print(my_sweet_home)
+
 
 # Доработать практическую часть урока lesson_007/python_snippets/08_practice.py
 
