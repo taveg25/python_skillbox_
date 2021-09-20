@@ -71,11 +71,11 @@ class Man:
         dice = randint(1, 6)
         if self.fullness <= 20:
             self.eat()
-        elif self.house.food_for_man < 10:
+        elif self.house.food_for_man < 20:
             self.shopping_for_man()
-        elif self.house.food_for_cat < 30:
+        elif self.house.food_for_cat < 120:
             self.shopping_for_cat()
-        elif self.house.mud >= 100:
+        elif self.house.mud >= 50:
             self.clean()
         elif self.house.money < 50:
             self.work()
@@ -131,34 +131,49 @@ class Cat(object):
 
     def act(self):
         if self.fullness <= 0 or self.house.mud > 120:
+            self.fullness = 0
             cprint('{} умер...'.format(self.name), color='red')
             return
         dice = randint(1, 6)
         if self.fullness < 20:
             self.eat()
-        elif dice == 1 or 2:
+        elif dice == 1:
             self.breake_wall()
-        elif dice == 3:
+        elif dice == 2:
             self.eat()
         else:
             self.sleep()
 
 leha = Man(name='Лёха')
-barsik = Cat(name='Барсик')
-matroskin = Cat(name='Матроскин')
+cats = [Cat(name='Барсик'),
+        Cat(name='Матроскин'),
+        Cat(name='Мурзик'),
+        Cat(name='Васька'),
+        Cat(name='Филька'),
+        Cat(name='Maks'),
+        Cat(name='Begemot'),
+        Cat(name='Kot'),
+        Cat(name='Koshka'),
+        Cat(name='kotenok'),
+        ]
 my_sweet_home = House()
 leha.go_to_the_house(house=my_sweet_home)
-leha.take_cat(barsik)
-leha.take_cat(matroskin)
-for day in range(1, 1366):
+for cat in cats:
+    leha.take_cat(cat)
+
+
+
+
+for day in range(1, 106):
     print('================ день {} =================='.format(day))
     leha.act()
-    barsik.act()
-    matroskin.act()
+    for cat in cats:
+        cat.act()
+
     print('--- в конце дня ---')
     print(leha)
-    print(barsik)
-    print(matroskin)
+    for cat in cats:
+        print(cat)
     print(my_sweet_home)
 
 
@@ -185,7 +200,7 @@ for day in range(1, 1366):
 
 # Человеку и коту надо вместе прожить 365 дней.
 
-# TODO здесь ваш код
+
 
 # Усложненное задание (делать по желанию)
 # Создать несколько (2-3) котов и подселить их в дом к человеку.

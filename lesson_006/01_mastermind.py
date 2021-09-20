@@ -56,6 +56,6 @@ while True:
     else:
         print('input uncorrect number')
     if mastermind_engine.is_gameover(result):
-        print('You are vin for', mastermind_engine._course_of_game, 'course of game')
+        print('You are WIN for', mastermind_engine._course_of_game, 'course of game')
         break
 
