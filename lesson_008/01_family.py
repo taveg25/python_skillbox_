@@ -54,7 +54,7 @@ class House(object):
     def __str__(self):
         return 'В доме денег осталось {}, еды для людей осталось {}, еды для котов осталось {}' \
                ' уровень грязи составляет {}.'\
-            .format(self.money, self.food_for_man, self. food_for_cat, self.mud)
+            .format(self.money, self.food_for_man, self. food_for_cat, round(self.mud, 1))
 
 
 class Man(object):
@@ -87,14 +87,16 @@ class Man(object):
             cprint('{} поел 20'.format(self.name), color='yellow')
             self.fullness += 30
             self.house.food_for_man -= 20
-            Man.eating_food += 30
+            Man.eating_food += 20
         elif self.house.food_for_man >= 10:
-            cprint('{} поел 20'.format(self.name), color='yellow')
+            cprint('{} поел 10'.format(self.name), color='yellow')
             self.fullness += 20
             self.house.food_for_man -= 10
-            Man.eating_food += 30
+            Man.eating_food += 10
         else:
             cprint('{} нет еды!'.format(self.name), color='red')
+            if self.shopping_for_man():
+                self.shoping_for_man()
 
     def act(self):
         if (self.fullness <= 0) or (self.happy < 10):
@@ -105,8 +107,6 @@ class Man(object):
         self.house.mud += 5 / Man.count
         if self.house.mud > 90:
             self.happy -= 10
-
-
 
     def go_to_the_house(self, house):
         self.house = house
@@ -205,7 +205,7 @@ class Wife(Man):
                 self.spouse.happy += 5
 
     def clean_house(self):
-        cprint('{} Убиралась весь день'.format(self.name), color='red')
+        cprint('{} Убиралась весь день'.format(self.name), color='green')
         if self.house.mud >= 100:
             self.house.mud -= 100
         else:
@@ -236,6 +236,34 @@ class Wife(Man):
             else:
                 self.petting_the_cat()
 
+
+class Child(Man):
+
+    def eat(self):
+        if self.house.food_for_man >= 10:
+            cprint('{} поел 10'.format(self.name), color='yellow')
+            self.fullness += 20
+            self.house.food_for_man -= 10
+            Man.eating_food += 10
+        else:
+            cprint('{} нет еды!'.format(self.name), color='red')
+
+    def sleep(self):
+        cprint('{} поспал'.format(self.name), color='blue')
+        self.fullness -= 10
+
+    def act(self):
+        super().act()
+        if self.fullness > 0:
+            dice = randint(1, 6)
+            if self.happy != 100:
+                self.happy = 100
+            if self.fullness <= 30:
+                self.eat()
+            elif dice == (1 or 2 or 3):
+                self.eat()
+            else:
+                self.sleep()
 
 class Cat(object):
     cat_mud = 0
@@ -283,6 +311,7 @@ class Cat(object):
         else:
             self.sleep()
 
+
 home = House()
 serge = Husband(name='Сережа')
 serge.go_to_the_house(home)
@@ -292,14 +321,18 @@ masha.wedding(serge)
 serge.wedding(masha)
 barsik = Cat(name='Барсик')
 masha.take_cat(barsik)
+child = Child(name='Малыш')
+child.go_to_the_house(home)
 
-for day in range(66):
+for day in range(366):
     cprint('================== День {} =================='.format(day), color='red')
+    child.act()
     serge.act()
     masha.act()
     barsik.act()
     cprint(serge, color='cyan')
     cprint(masha, color='cyan')
+    cprint(child, color='cyan')
     cprint(barsik, color='cyan')
     cprint(home, color='cyan')
 cprint('Всего заработано денег {}'.format(Husband.money_earned), color='yellow')
@@ -308,111 +341,3 @@ cprint('Всего съедено еды {}'.format(Man.eating_food), color='yel
 cprint('Всего куплено шуб {}'.format(Wife.fur_coat), color='yellow')
 cprint('Кота погладили {} раз (дней)'.format(Man.petting_cat), color='yellow')
 cprint('Грязи от кота за период {}'.format(Cat.cat_mud), color='yellow')
-
-######################################################## Часть вторая
-#
-# После подтверждения учителем первой части надо
-# отщепить ветку develop и в ней начать добавлять котов в модель семьи
-#
-# Кот может:
-#   есть,
-#   спать,
-#   драть обои
-#
-# Люди могут:
-#   гладить кота (растет степень счастья на 5 пунктов)
-#
-# В доме добавляется:
-#   еда для кота (в начале - 30)
-#
-# У кота есть имя и степень сытости (в начале - 30)
-# Любое действие кота, кроме "есть", приводит к уменьшению степени сытости на 10 пунктов
-# Еда для кота покупается за деньги: за 10 денег 10 еды.
-# Кушает кот максимум по 10 единиц еды, степень сытости растет на 2 пункта за 1 пункт еды.
-# Степень сытости не должна падать ниже 0, иначе кот умрет от голода.
-#
-# Если кот дерет обои, то грязи становится больше на 5 пунктов
-
-
-
-
-
-######################################################## Часть вторая бис
-#
-# После реализации первой части надо в ветке мастер продолжить работу над семьей - добавить ребенка
-#
-# Ребенок может:
-#   есть,
-#   спать,
-#
-# отличия от взрослых - кушает максимум 10 единиц еды,
-# степень счастья  - не меняется, всегда ==100 ;)
-
-class Child:
-
-    def __init__(self):
-        pass
-
-    def __str__(self):
-        return super().__str__()
-
-    def act(self):
-        pass
-
-    def eat(self):
-        pass
-
-    def sleep(self):
-        pass
-
-
-# TODO после реализации второй части - отдать на проверку учителем две ветки
-
-
-######################################################## Часть третья
-#
-# после подтверждения учителем второй части (обоих веток)
-# влить в мастер все коммиты из ветки develop и разрешить все конфликты
-# отправить на проверку учителем.
-
-
-# home = House()
-# serge = Husband(name='Сережа')
-# masha = Wife(name='Маша')
-# kolya = Child(name='Коля')
-# murzik = Cat(name='Мурзик')
-#
-# for day in range(365):
-#     cprint('================== День {} =================='.format(day), color='red')
-#     serge.act()
-#     masha.act()
-#     kolya.act()
-#     murzik.act()
-#     cprint(serge, color='cyan')
-#     cprint(masha, color='cyan')
-#     cprint(kolya, color='cyan')
-#     cprint(murzik, color='cyan')
-
-
-# Усложненное задание (делать по желанию)
-#
-# Сделать из семьи любителей котов - пусть котов будет 3, или даже 5-10.
-# Коты должны выжить вместе с семьей!
-#
-# Определить максимальное число котов, которое может прокормить эта семья при значениях зарплаты от 50 до 400.
-# Для сглаживание случайностей моделирование за год делать 3 раза, если 2 из 3х выжили - считаем что выжили.
-#
-# Дополнительно вносить некий хаос в жизнь семьи
-# - N раз в год вдруг пропадает половина еды из холодильника (коты?)
-# - K раз в год пропадает половина денег из тумбочки (муж? жена? коты?!?!)
-# Промоделировать - как часто могут случаться фейлы что бы это не повлияло на жизнь героев?
-#   (N от 1 до 5, K от 1 до 5 - нужно вычислит максимумы N и K при котором семья гарантированно выживает)
-#
-# в итоге должен получится приблизительно такой код экспериментов
-# for food_incidents in range(6):
-#   for money_incidents in range(6):
-#       life = Simulation(money_incidents, food_incidents)
-#       for salary in range(50, 401, 50):
-#           max_cats = life.experiment(salary)
-#           print(f'При зарплате {salary} максимально можно прокормить {max_cats} котов')
-
