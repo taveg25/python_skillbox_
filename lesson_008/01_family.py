@@ -95,8 +95,7 @@ class Man(object):
             Man.eating_food += 10
         else:
             cprint('{} нет еды!'.format(self.name), color='red')
-            if self.shopping_for_man():
-                self.shoping_for_man()
+
 
     def act(self):
         if (self.fullness <= 0) or (self.happy < 10):
@@ -210,6 +209,11 @@ class Wife(Man):
             self.house.mud -= 100
         else:
             self.house.mud = 0
+
+    def eat(self):
+        super().eat()
+        if self.house.food_for_man < 10:
+            self.shopping_for_man()
 
     def act(self):
         super().act()
