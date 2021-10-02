@@ -1,3 +1,4 @@
+#/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 # Есть файл с протоколом регистраций пользователей на сайте - registrations.txt
@@ -22,4 +23,35 @@
 # - поле возраст НЕ является числом от 10 до 99: ValueError
 # Вызов метода обернуть в try-except.
 
-# TODO здесь ваш код
+class NotNameError(Exception):
+    pass
+
+
+class NotEmailError(Exception):
+    pass
+
+
+def check_reg(line):
+    if len(line.split()) != 3:
+        raise ValueError('Не все поля заполнены')
+    else:
+        name, email, age = line.split(' ')
+        if not name.isalpha():
+            raise NotNameError('Некорректное имя')
+        elif not ('@' in email and '.' in email):
+            raise NotNameError('Некореектный мейл')
+        elif not (int(age) in range(10, 100)):
+            raise ValueError('Возраст указан неверно')
+
+i = 1
+with open('registrations.txt', 'r') as ff:
+    for line in ff:
+        try:
+            check_reg(line)
+            with open('registrations_good.log', 'a') as file:
+                file.write(f'{line} ')
+        except Exception as exc:
+            with open('registrations_bad.log', 'a') as file:
+                file.write(f'строка {i} содержание {line[:-1]} событие {exc} \n')
+        finally:
+            i += 1
