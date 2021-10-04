@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 
@@ -21,9 +22,30 @@ def get_prime_numbers(n):
 # Распечатать все простые числа до 10000 в столбик
 
 
-class PrimeNumbers:
-    pass
-    # TODO здесь ваш код
+class PrimeNumbers(object):
+    """" Итератор последовательности простых чисел до n"""
+
+    def __init__(self, n):
+        self.i = 2
+        self.prime_numbers = [2]
+        self.n = n
+
+    def __iter__(self):
+        self.i = 1
+        self.prime_numbers = []
+        return self
+
+    def __next__(self):
+        self.i += 1
+        if self.i > 1:
+            if self.i > self.n:
+                raise StopIteration()
+            if 0 not in (map((lambda x: self.i % x), self.prime_numbers)):
+                self.prime_numbers.append(self.i)
+                return self.i
+            else:
+                return self.__next__()
+
 
 
 prime_number_iterator = PrimeNumbers(n=10000)
@@ -42,8 +64,8 @@ def prime_numbers_generator(n):
     # TODO здесь ваш код
 
 
-for number in prime_numbers_generator(n=10000):
-    print(number)
+# for number in prime_numbers_generator(n=10000):
+#     print(number)
 
 
 # Часть 3
