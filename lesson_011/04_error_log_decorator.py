@@ -6,20 +6,58 @@
 # Имя файла лога - function_errors.log
 # Формат лога: <имя функции> <параметры вызова> <тип ошибки> <текст ошибки>
 # Лог файл открывать каждый раз при ошибке в режиме 'a'
+import functools
 
 
-def log_errors(func):
-    pass
-    # TODO здесь ваш код
+# def log_errors(func):
+#     @functools.wraps(func)
+#     def surrogate(*args, **kwargs):
+#         args_repr = [repr(a) for a in args]
+#         kwargs_repr = [f'{k}={v!r}' for k, v in kwargs.items()]
+#         signature = ','.join(args_repr + kwargs_repr)
+#         try:
+#             result = func(*args, **kwargs)
+#         except Exception as exc:
+#             print(f'В функции - {func.__name__} с параметрами {signature} ошибка {exc}')
+#             with open('function_errors.log', 'a') as file:
+#                 file.write(f'В функции - {func.__name__} с параметрами {signature} ошибка {exc}\n')
+#
+#         return result
+#
+#     return surrogate
+def log_errors(log):
+    def log_errors_1(func):
+        @functools.wraps(func)
+        def surrogate(*args, **kwargs):
+            args_repr = [repr(a) for a in args]
+            kwargs_repr = [f'{k}={v!r}' for k, v in kwargs.items()]
+            signature = ','.join(args_repr + kwargs_repr)
+            try:
+                result = func(*args, **kwargs)
+            except Exception as exc:
+                print(f'В функции - {func.__name__} с параметрами {signature} ошибка {exc}')
+                with open(log, 'a') as file:
+                    file.write(f'В функции - {func.__name__} с параметрами {signature} ошибка {exc}\n')
+
+            return result
+
+        return surrogate
+    return log_errors_1
+
+
+
+
 
 
 # Проверить работу на следующих функциях
-@log_errors
+@log_errors('function_errors.log')
 def perky(param):
     return param / 0
 
 
-@log_errors
+# perky(1)
+
+@log_errors('function_errors.log')
 def check_line(line):
     name, email, age = line.split(' ')
     if not name.isalpha():
@@ -43,8 +81,8 @@ for line in lines:
         check_line(line)
     except Exception as exc:
         print(f'Invalid format: {exc}')
-perky(param=42)
 
+perky(param=42)
 
 # Усложненное задание (делать по желанию).
 # Написать декоратор с параметром - именем файла
@@ -52,4 +90,3 @@ perky(param=42)
 # @log_errors('function_errors.log')
 # def func():
 #     pass
-
