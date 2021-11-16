@@ -43,6 +43,7 @@
 # 1.Атаковать монстра
 # 2.Перейти в другую локацию
 # 3.Выход
+import os
 from decimal import Decimal
 import csv
 import re
@@ -70,78 +71,45 @@ class Hero(object):
             self.data = json.load(read_file)
         self.data_path = "self.data['Location_0_tm0']"
         self.field_names = ['current_location', 'current_experience', 'current_date']
-        self.logs = [{self.field_names[0]: self.field_names[0],
-                      self.field_names[1]: self.field_names[1],
-                      self.field_names[2]: self.field_names[2]}]
+        self.save_logs_file = 'dungeon.csv'
+        if os.path.exists(self.save_logs_file):
+            self.logs = []
+
+        else:
+            self.logs = [{self.field_names[0]: self.field_names[0],
+                          self.field_names[1]: self.field_names[1],
+                          self.field_names[2]: self.field_names[2]}]
 
     def run(self):
         while True:
-            print('-' * 10)
-            self.time_pr = (datetime.datetime.now() - self.time_start)
-            self.logs.append({self.field_names[0]: self.location,
-                              self.field_names[1]: self.exp,
-                              self.field_names[2]: self.time_pr})
-            print(f'Вы находитесь в {self.location}\n'
-                  f'У Вас {self.exp} опыта и осталось {self.time} времени\n'
-                  f'Прошло уже {self.time_pr}\n'
-                  f'Внутри Вы видете:')
             self.what_show()
-            print('Выберите действие:\n'
-                  '1 - Kill the monster\n'
-                  '2 - Change location\n'
-                  '3 - Exit')
             action = input(': ').strip()
             if action == '3':
                 self.save_logs()
                 break
             elif action == '1':
-                if type(self.d) == list:
-                    mobs = []
-                    for i in self.d:
-                        if type(i) == str:
-                            mobs.append(i)
-                        elif type(i) == list:
-                            for j in i:
-                                if type(j) == str:
-                                    mobs.append(j)
-                    if len(mobs) == 0:
-                        mob = None
-                        print('Monster is absent')
-                        continue
-                    print('What monster do you want kill?')
-                    for j in range(len(mobs)):
-                        print(f'{j+1} - {mobs[j]}')
-                    action_2 = input(': ').strip()
-                    try:
-                        mob = mobs[int(action_2)-1]
-                        mobs.remove(mob)
-                    except BaseException:
-                        mob = None
-                self.kill_mob(mob)
+                mobs = self.create_list_of_mobs()
+                if mobs:
+                    self.kill_mob(mobs)
+                else:
+                    continue
             elif action == '2':
-                locs = []
-                self.locs_2 = []
-                for i in self.d:
-                    if type(i) == dict:
-                        for key in i.keys():
-                            locs.append(key)
-                            self.locs_2.append(i)
-                print('What place')
-                for j in range(len(locs)):
-                    print(f'{j + 1} - {locs[j]}')
-                action_3 = input(': ').strip()
-                try:
-                    loc = locs[int(action_3) - 1]
-                    self.add_path = '[' + str(self.d.index(self.locs_2[int(action_3) - 1])) + ']["' + loc + '"]'
-                    print(self.add_path)
-                except BaseException:
-                    loc = None
-                self.change_location(loc)
+                locs = self.create_list_of_locations()
+                self.change_location(locs)
             else:
                 print('<Unknown command>')
 
     def what_show(self):
         self.d = eval(self.data_path)
+        self.time_pr = (datetime.datetime.now() - self.time_start)
+        self.logs.append({self.field_names[0]: self.location,
+                          self.field_names[1]: self.exp,
+                          self.field_names[2]: self.time_pr})
+        print('-' * 10)
+        print(f'Вы находитесь в {self.location}\n'
+              f'У Вас {self.exp} опыта и осталось {self.time} времени\n'
+              f'Прошло уже {self.time_pr}\n'
+              f'Внутри Вы видете:')
         for x in (self.d):
             if type(x) == str:
                 print(x)
@@ -150,9 +118,35 @@ class Hero(object):
                     print(key)
             elif type(x) == list:
                 for t in x: print(t)
-        print(type(self.d))
+        print('Выберите действие:\n'
+              '1 - Kill the monster\n'
+              '2 - Change location\n'
+              '3 - Exit')
 
-    def kill_mob(self, mob):
+    def create_list_of_mobs(self):
+        if type(self.d) == list:
+            mobs = []
+            for i in self.d:
+                if type(i) == str:
+                    mobs.append(i)
+                elif type(i) == list:
+                    for j in i:
+                        if type(j) == str:
+                            mobs.append(j)
+            if len(mobs) == 0:
+                print('Monster is absent')
+            return mobs
+
+    def kill_mob(self, mobs):
+        print('What monster do you want kill?')
+        for j in range(len(mobs)):
+            print(f'{j + 1} - {mobs[j]}')
+        action_2 = input(': ').strip()
+        try:
+            mob = mobs[int(action_2) - 1]
+            mobs.remove(mob)
+        except BaseException:
+            mob = None
         if mob:
             exp = int(re.search(re_exp, mob)[1])
             self.exp += exp
@@ -161,23 +155,49 @@ class Hero(object):
             try:
                 self.d.remove(mob)
             except BaseException:
-                self.d[0].remove(mob) #Это, конечно, костыль, нужно более универсально делать
-                print('net')
+                self.d[0].remove(mob) #Это, конечно, костыль, в идеале, нужно более универсально делать
 
         else:
-            print('Monster is absent(kill bot)')
+            print('Monster is absent')
 
-    def change_location(self, loc):
-        tm = Decimal(re.search(re_tm, loc)[1])
-        self.time -= tm
-        self.location = loc
-        self.data_path += self.add_path
+    def create_list_of_locations(self):
+        locs = []
+        self.locs_2 = []
+        for i in self.d:
+            if type(i) == dict:
+                for key in i.keys():
+                    locs.append(key)
+                    self.locs_2.append(i)
+        return locs
+
+
+    def change_location(self, locs):
+        print('What place')
+        for j in range(len(locs)):
+            print(f'{j + 1} - {locs[j]}')
+        action_3 = input(': ').strip()
+        try:
+            loc = locs[int(action_3) - 1]
+            self.add_path = '[' + str(self.d.index(self.locs_2[int(action_3) - 1])) + ']["' + loc + '"]'
+            print(self.add_path)
+        except BaseException:
+            loc = None
+        if loc:
+            tm = Decimal(re.search(re_tm, loc)[1])
+            self.time -= tm
+            self.location = loc
+            self.data_path += self.add_path
+        else:
+            print('Location is absent')
 
     def save_logs(self):
-        with open('dungeon.csv', "a", newline='') as out_file:
-            writer = csv.DictWriter(out_file, delimiter=',', fieldnames=self.field_names)
-            for one_log in self.logs:
-                writer.writerow(one_log)
+        if self.exp >= 280 and self.time > 0:
+            with open('dungeon.csv', "a", newline='') as out_file:
+                writer = csv.DictWriter(out_file, delimiter=',', fieldnames=self.field_names)
+                for one_log in self.logs:
+                    writer.writerow(one_log)
+        else:
+            pass
 
 Igor = Hero('Igor')
 Igor.run()
